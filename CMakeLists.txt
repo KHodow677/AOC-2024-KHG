@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(executable)
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+add_subdirectory(engine/khg_utl)
+
+file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+add_executable("${CMAKE_PROJECT_NAME}")
+set_property(TARGET "${CMAKE_PROJECT_NAME}" PROPERTY C_STANDARD 99)
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC GLFW_INCLUDE_NONE=1) 
+target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCES_PATH="./res/") 
+
+target_sources("${CMAKE_PROJECT_NAME}" PRIVATE ${MY_SOURCES} )
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE khg_utl)
+if (WIN32)
+  target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE Ws2_32)
+  target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE Mswsock)
+  target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE AdvApi32)
+  # set_target_properties("${CMAKE_PROJECT_NAME}" PROPERTIES LINK_FLAGS "-mwindows")
+else()
+  target_compile_options("${CMAKE_PROJECT_NAME}" PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+  target_link_libraries("${CMAKE_PROJECT_NAME}" PRIVATE -fsanitize=address)
+endif()
+

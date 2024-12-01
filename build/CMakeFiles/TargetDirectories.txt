@@ -1,0 +1,6 @@
+/home/khodow/Documents/KHodow/AOC-2024-KHG/build/CMakeFiles/executable.dir
+/home/khodow/Documents/KHodow/AOC-2024-KHG/build/CMakeFiles/edit_cache.dir
+/home/khodow/Documents/KHodow/AOC-2024-KHG/build/CMakeFiles/rebuild_cache.dir
+/home/khodow/Documents/KHodow/AOC-2024-KHG/build/engine/khg_utl/CMakeFiles/khg_utl.dir
+/home/khodow/Documents/KHodow/AOC-2024-KHG/build/engine/khg_utl/CMakeFiles/edit_cache.dir
+/home/khodow/Documents/KHodow/AOC-2024-KHG/build/engine/khg_utl/CMakeFiles/rebuild_cache.dir
