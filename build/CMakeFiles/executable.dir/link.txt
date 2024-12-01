@@ -1,1 +1,0 @@
-/usr/bin/gcc -Wl,--dependency-file,CMakeFiles/executable.dir/link.d CMakeFiles/executable.dir/src/aoc/1.c.o CMakeFiles/executable.dir/src/day_map.c.o CMakeFiles/executable.dir/src/main.c.o -o executable  engine/khg_utl/libkhg_utl.a -fsanitize=address

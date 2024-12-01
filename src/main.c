@@ -6,7 +6,7 @@ const int main(int argc, char *argv[]) {
   if (argc > 1) {
     func_input *fi = utl_map_at(day_map, argv[1]);
     if (fi) {
-      fi->func(fi->input_path);
+      fi->func(fi->input_path, fi->count);
     }
   }
   utl_map_deallocate(day_map);
