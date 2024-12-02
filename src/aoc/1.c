@@ -2,6 +2,7 @@
 #include "khg_utl/array.h"
 #include "khg_utl/file_reader.h"
 #include "khg_utl/map.h"
+#include "khg_utl/string.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -25,11 +26,17 @@ void day0101(const char *input_path, const uint16_t num_lines) {
   int num1, num2, count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
-    if (sscanf(buffer, "%i\t%i", &num1, &num2) == 2) {
-      utl_array_set(arr1, count, &num1);
-      utl_array_set(arr2, count, &num2);
-      count++;
-    } 
+    utl_string *buffer_string = utl_string_create(buffer);
+    int num_count = 0;
+    utl_string **tokens = utl_string_tokenize(buffer_string, "   ", &num_count);
+    num1 = utl_string_to_int(tokens[0]);
+    num2 = utl_string_to_int(tokens[1]);
+    utl_array_set(arr1, count, &num1);
+    utl_array_set(arr2, count, &num2);
+    utl_string_deallocate(tokens[0]);
+    utl_string_deallocate(tokens[1]);
+    utl_string_deallocate(buffer_string);
+    count++;
   }
   utl_array_sort(arr1, compare_ints_arr);
   utl_array_sort(arr2, compare_ints_arr);
@@ -52,11 +59,17 @@ void day0102(const char *input_path, const uint16_t num_lines) {
   int num1, num2, count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
-    if (sscanf(buffer, "%i\t%i", &num1, &num2) == 2) {
-      utl_array_set(arr1, count, &num1);
-      utl_array_set(arr2, count, &num2);
-      count++;
-    } 
+    utl_string *buffer_string = utl_string_create(buffer);
+    int num_count = 0;
+    utl_string **tokens = utl_string_tokenize(buffer_string, "   ", &num_count);
+    num1 = utl_string_to_int(tokens[0]);
+    num2 = utl_string_to_int(tokens[1]);
+    utl_array_set(arr1, count, &num1);
+    utl_array_set(arr2, count, &num2);
+    utl_string_deallocate(tokens[0]);
+    utl_string_deallocate(tokens[1]);
+    utl_string_deallocate(buffer_string);
+    count++;
   }
   utl_map *freq_table = utl_map_create(compare_ints_map, free, free);
   for (int i = 0; i < num_lines; i++) {
