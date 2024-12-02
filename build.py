@@ -12,7 +12,10 @@ def clean_and_copy_resources():
 def run_cmake():
   os.makedirs("build", exist_ok=True)
   os.chdir("build")
-  subprocess.run(["cmake", "..", "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"])
+  if platform.system() == "Windows":
+    subprocess.run(["cmake", "-G", "MinGW Makefiles", "..", "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"])
+  else:
+    subprocess.run(["cmake", "..", "-DCMAKE_C_COMPILER=gcc", "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"])
 
 def build_project():
   subprocess.run(["cmake", "--build", "."])
@@ -20,14 +23,6 @@ def build_project():
 def run_executable(args=""):
   executable = "executable.exe" if platform.system() == "Windows" else "./executable"
   subprocess.run([executable] + ([args] if args else []))
-
-def run_test_runner():
-  test_runner = "test_runner.exe" if platform.system() == "Windows" else "./test_runner"
-  if os.path.exists("build"):
-    os.chdir("build")
-    subprocess.run([test_runner])
-  else:
-    print("Build folder not located: run `build.py build` first")
 
 def main():
   if len(sys.argv) < 2:
@@ -50,9 +45,6 @@ def main():
   elif command == "run" and arg2 == "joiner":
     os.chdir("build")
     run_executable("joiner")
-  elif command == "test":
-    os.chdir("build")
-    run_test_runner()
   elif command == "build" and arg2 == "run" and not arg3:
     clean_and_copy_resources()
     run_cmake()
@@ -64,7 +56,7 @@ def main():
     build_project()
     run_executable(arg3)
   else:
-    print("Command keywords: [build, run, test]")
+    print("Command keywords: [build, run]")
 
 if __name__ == "__main__":
   main()
