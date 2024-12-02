@@ -25,7 +25,6 @@ void day0101(const char *input_path, const uint16_t num_lines) {
   int num1, num2, count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
-    printf("buffer: %s\n", buffer);
     if (sscanf(buffer, "%i\t%i", &num1, &num2) == 2) {
       utl_array_set(arr1, count, &num1);
       utl_array_set(arr2, count, &num2);
