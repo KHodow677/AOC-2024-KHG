@@ -39,12 +39,6 @@ def main():
   elif command == "run" and not arg2:
     os.chdir("build")
     run_executable()
-  elif command == "run" and arg2 == "hoster":
-    os.chdir("build")
-    run_executable("hoster")
-  elif command == "run" and arg2 == "joiner":
-    os.chdir("build")
-    run_executable("joiner")
   elif command == "build" and arg2 == "run" and not arg3:
     clean_and_copy_resources()
     run_cmake()
