@@ -9,13 +9,13 @@
 #include <time.h>
 #include <wchar.h>
 
-const char *STRING_ASCII_LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const char *STRING_ASCII_LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-const char *STRING_ASCII_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const char *STRING_DIGITS = "0123456789";
-const char *STRING_HEXDIGITS = "0123456789abcdefABCDEF";
-const char *STRING_WHITESPACE = " \t\n\r\f\v";
-const char *STRING_PUNCTUATION = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+const char *UTL_STRING_ASCII_LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const char *UTL_STRING_ASCII_LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+const char *UTL_STRING_ASCII_UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const char *UTL_STRING_DIGITS = "0123456789";
+const char *UTL_STRING_HEXDIGITS = "0123456789abcdefABCDEF";
+const char *UTL_STRING_WHITESPACE = " \t\n\r\f\v";
+const char *UTL_STRING_PUNCTUATION = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 
 utl_memory_pool_string *global_pool = NULL;
@@ -48,7 +48,7 @@ static utl_memory_pool_string *memory_pool_create(size_t size) {
       free(pool);
       return NULL;
     }
-    pool->poolSize = size;
+    pool->pool_size = size;
     pool->used = 0;
   }
   return pool;
@@ -59,7 +59,7 @@ static void *memory_pool_allocate(utl_memory_pool_string *pool, size_t size) {
     utl_error_func("Memory pool is NULL in memory_pool_allocate", utl_user_defined_data);
     return NULL;
   }
-  if (pool->used + size > pool->poolSize) {
+  if (pool->used + size > pool->pool_size) {
     utl_error_func("Memory pool out of memory in memory_pool_allocate", utl_user_defined_data);
     return NULL;
   }
@@ -85,7 +85,7 @@ utl_string *utl_string_create(const char *initialStr) {
   }
   size_t initialSize = initialStr ? strlen(initialStr) : 0;
   str->size = initialSize;
-  str->capacitySize = 32 + initialSize;
+  str->capacity_size = 32 + initialSize;
   size_t initialPoolSize = 10000000;
   str->pool = memory_pool_create(initialPoolSize);
   if (!str->pool) {
@@ -93,15 +93,15 @@ utl_string *utl_string_create(const char *initialStr) {
     free(str);
     exit(-1);
   }
-  str->dataStr = memory_pool_allocate(str->pool, str->capacitySize);
-  if (!str->dataStr) {
+  str->data_str = memory_pool_allocate(str->pool, str->capacity_size);
+  if (!str->data_str) {
     utl_error_func("Memory pool allocation failed in string_create", utl_user_defined_data);
     memory_pool_destroy(str->pool);
     free(str);
     exit(-1);
   }
   if (initialStr) {
-    strcpy(str->dataStr, initialStr);
+    strcpy(str->data_str, initialStr);
   }
   return str;
 }
@@ -122,8 +122,8 @@ utl_string *utl_string_create_with_pool(size_t size) {
     exit(-1);
   }
   str->size = 0;
-  str->capacitySize = 1;
-  str->dataStr = NULL;
+  str->capacity_size = 1;
+  str->data_str = NULL;
   str->pool = global_pool;
   return str;
 }
@@ -146,15 +146,15 @@ utl_string *utl_string_substr(utl_string *str, size_t pos, size_t len) {
     return NULL;
   }
   substr->size = len;
-  substr->capacitySize = len + 1;
-  substr->dataStr = (char *)malloc(substr->capacitySize * sizeof(char));
-  if (substr->dataStr == NULL) {
+  substr->capacity_size = len + 1;
+  substr->data_str = (char *)malloc(substr->capacity_size * sizeof(char));
+  if (substr->data_str == NULL) {
     utl_error_func("Memory allocation failed for dataStr in substring in string_substr", utl_user_defined_data);
     free(substr);
     return NULL;
   }
-  strncpy(substr->dataStr, str->dataStr + pos, len);
-  substr->dataStr[len] = '\0';
+  strncpy(substr->data_str, str->data_str + pos, len);
+  substr->data_str[len] = '\0';
   return substr;
 }
 
@@ -171,7 +171,7 @@ bool utl_string_contains(utl_string *str, const char *substr) {
     utl_error_func("The substring is NULL in string_contains", utl_user_defined_data);
     return false;
   }
-  return strstr(str->dataStr, substr) != NULL;
+  return strstr(str->data_str, substr) != NULL;
 }
 
 int utl_string_compare(const utl_string *str1, const utl_string *str2) {
@@ -182,7 +182,7 @@ int utl_string_compare(const utl_string *str1, const utl_string *str2) {
     utl_error_func("One or both String objects are NULL in string_compare", utl_user_defined_data);
     return (str1 == NULL) ? -1 : 1;
   }
-  return strcmp(str1->dataStr, str2->dataStr);
+  return strcmp(str1->data_str, str2->data_str);
 }
 
 bool utl_string_is_equal(utl_string *str1, utl_string *str2) {
@@ -212,8 +212,8 @@ bool utl_string_is_not_equal(utl_string *str1, utl_string *str2) {
 bool utl_string_is_alpha(utl_string *str) {
   if (str != NULL){
     for (size_t index = 0; index < str->size; index++){
-      if (!(str->dataStr[index] >= 'a' && str->dataStr[index] <= 'z') && 
-        !(str->dataStr[index] >= 'A' && str->dataStr[index] <= 'Z')) {
+      if (!(str->data_str[index] >= 'a' && str->data_str[index] <= 'z') && 
+        !(str->data_str[index] >= 'A' && str->data_str[index] <= 'Z')) {
         return false;
       }
     }
@@ -228,7 +228,7 @@ bool utl_string_is_digit(utl_string *str) {
     return false;
   }
   for (size_t index = 0; index < str->size; index++) {
-    if (!(str->dataStr[index] >= '0' && str->dataStr[index] <= '9')) {
+    if (!(str->data_str[index] >= '0' && str->data_str[index] <= '9')) {
       return false;
     }
   }       
@@ -241,7 +241,7 @@ bool utl_string_is_upper(utl_string *str) {
     return false;
   }
   for (size_t index = 0; index < str->size; index++) {
-    if (str->dataStr[index] >= 'a' && str->dataStr[index] <= 'z') {
+    if (str->data_str[index] >= 'a' && str->data_str[index] <= 'z') {
       return false;
     }
   }
@@ -254,7 +254,7 @@ bool utl_string_is_lower(utl_string *str) {
     return false;
   }
   for (size_t index = 0; index < str->size; index++) {
-    if (str->dataStr[index] >= 'A' && str->dataStr[index] <= 'Z') {
+    if (str->data_str[index] >= 'A' && str->data_str[index] <= 'Z') {
       return false;
     }
   }
@@ -262,14 +262,14 @@ bool utl_string_is_lower(utl_string *str) {
 }
 
 void utl_string_reverse(utl_string *str) {
-  if (str != NULL && str->dataStr != NULL) {
+  if (str != NULL && str->data_str != NULL) {
     char *reverse = (char *)malloc(sizeof(char) * (str->size + 1));
     if (!reverse) {
       utl_error_func("Error: Memory allocation failed in string_reverse", utl_user_defined_data);
       return;
     }
     for (int index = str->size - 1, j = 0; index >= 0; index--, j++) {
-      reverse[j] = str->dataStr[index];
+      reverse[j] = str->data_str[index];
     }
     reverse[str->size] = '\0';
     utl_string_replace(str, utl_string_c_str(str), reverse);
@@ -288,21 +288,21 @@ void utl_string_resize(utl_string *str, size_t newSize) {
   }
   if (newSize < str->size) {
     str->size = newSize;
-    str->dataStr[newSize] = '\0';
+    str->data_str[newSize] = '\0';
   } 
   else if (newSize > str->size) {
-    if (newSize >= str->capacitySize) {
+    if (newSize >= str->capacity_size) {
       size_t newCapacity = newSize + 1;
       char *newData = memory_pool_allocate(str->pool, newCapacity);
       if (!newData) {
         utl_error_func("Memory allocation failed in string_resize", utl_user_defined_data);
         return;
       }
-      memcpy(newData, str->dataStr, str->size);
-      str->dataStr = newData;
-      str->capacitySize = newCapacity;
+      memcpy(newData, str->data_str, str->size);
+      str->data_str = newData;
+      str->capacity_size = newCapacity;
     }
-    memset(str->dataStr + str->size, '\0', newSize - str->size);
+    memset(str->data_str + str->size, '\0', newSize - str->size);
     str->size = newSize;
   }
 }
@@ -312,20 +312,20 @@ void utl_string_shrink_to_fit(utl_string *str) {
     utl_error_func("The String object is NULL in string_shrink_to_fit", utl_user_defined_data);
     return;
   }
-  if (str->size + 1 == str->capacitySize) {
+  if (str->size + 1 == str->capacity_size) {
     return;
   }
-  if (str->dataStr != NULL) {
+  if (str->data_str != NULL) {
     size_t newCapacity = str->size + 1;
     char *newData = memory_pool_allocate(str->pool, newCapacity);
     if (newData == NULL) {
       utl_error_func("Memory allocation failed in string_shrink_to_fit", utl_user_defined_data);
       return;
     }
-    memcpy(newData, str->dataStr, str->size);
+    memcpy(newData, str->data_str, str->size);
     newData[str->size] = '\0';
-    str->dataStr = newData;
-    str->capacitySize = newCapacity;
+    str->data_str = newData;
+    str->capacity_size = newCapacity;
   }
 }
 
@@ -342,18 +342,18 @@ void utl_string_append(utl_string *str, const char *strItem) {
   if (strItemLength == 0) { 
     return;
   }
-  if (str->size + strItemLength >= str->capacitySize) {
+  if (str->size + strItemLength >= str->capacity_size) {
     size_t newCapacity = str->size + strItemLength + 1;
     char *newData = memory_pool_allocate(str->pool, newCapacity);
     if (!newData) {
       utl_error_func("Memory allocation failed in string_append", utl_user_defined_data);
       return;
     }
-    memcpy(newData, str->dataStr, str->size);
-    str->dataStr = newData;
-    str->capacitySize = newCapacity;
+    memcpy(newData, str->data_str, str->size);
+    str->data_str = newData;
+    str->capacity_size = newCapacity;
   }
-  strcpy(str->dataStr + str->size, strItem);
+  strcpy(str->data_str + str->size, strItem);
   str->size += strItemLength;
 }
 
@@ -362,22 +362,22 @@ void utl_string_push_back(utl_string *str, char chItem) {
     utl_error_func("The String object is NULL in string_push_back", utl_user_defined_data);
     return;
   }
-  if (str->size + 1 >= str->capacitySize) {
-    size_t newCapacity = str->capacitySize * 2;
+  if (str->size + 1 >= str->capacity_size) {
+    size_t newCapacity = str->capacity_size * 2;
     char *newData = memory_pool_allocate(str->pool, newCapacity);
     if (!newData) {
       utl_error_func("Error: Memory allocation failed in string_push_back", utl_user_defined_data);
       return;
     }
-    if (str->dataStr) { 
-      memcpy(newData, str->dataStr, str->size);
+    if (str->data_str) { 
+      memcpy(newData, str->data_str, str->size);
     }
-    str->dataStr = newData;
-    str->capacitySize = newCapacity;
+    str->data_str = newData;
+    str->capacity_size = newCapacity;
   }
-  str->dataStr[str->size] = chItem;
+  str->data_str[str->size] = chItem;
   str->size++;
-  str->dataStr[str->size] = '\0';
+  str->data_str[str->size] = '\0';
 }
 
 void utl_string_assign(utl_string *str, const char *newStr) {
@@ -390,16 +390,16 @@ void utl_string_assign(utl_string *str, const char *newStr) {
     return;
   }
   size_t newStrLength = strlen(newStr);
-  if (newStrLength + 1 > str->capacitySize) {
+  if (newStrLength + 1 > str->capacity_size) {
     char *newData = memory_pool_allocate(str->pool, newStrLength + 1);
     if (!newData) {
       utl_error_func("Memory allocation failed in string_assign", utl_user_defined_data);
       return;
     }
-    str->dataStr = newData;
-    str->capacitySize = newStrLength + 1;
+    str->data_str = newData;
+    str->capacity_size = newStrLength + 1;
   }
-  strcpy(str->dataStr, newStr);
+  strcpy(str->data_str, newStr);
   str->size = newStrLength;
 }
 
@@ -418,22 +418,22 @@ void utl_string_insert(utl_string *str, size_t pos, const char *strItem) {
   }
   size_t strItemLength = strlen(strItem);
   size_t newTotalLength = str->size + strItemLength;
-  if (newTotalLength + 1 > str->capacitySize) {
+  if (newTotalLength + 1 > str->capacity_size) {
     size_t newCapacity = newTotalLength + 1;
     char *newData = memory_pool_allocate(str->pool, newCapacity);
     if (!newData) {
       utl_error_func("Memory allocation failed in string_insert", utl_user_defined_data);
       return;
     }
-    memcpy(newData, str->dataStr, pos);
-    memcpy(newData + pos + strItemLength, str->dataStr + pos, str->size - pos);
-    str->dataStr = newData;
-    str->capacitySize = newCapacity;
+    memcpy(newData, str->data_str, pos);
+    memcpy(newData + pos + strItemLength, str->data_str + pos, str->size - pos);
+    str->data_str = newData;
+    str->capacity_size = newCapacity;
   } 
   else { 
-    memmove(str->dataStr + pos + strItemLength, str->dataStr + pos, str->size - pos);
+    memmove(str->data_str + pos + strItemLength, str->data_str + pos, str->size - pos);
   }
-  memcpy(str->dataStr + pos, strItem, strItemLength);
+  memcpy(str->data_str + pos, strItem, strItemLength);
   str->size = newTotalLength;
 }
 
@@ -449,7 +449,7 @@ void utl_string_erase(utl_string *str, size_t pos, size_t len) {
   if (pos + len > str->size) { 
     len = str->size - pos;
   }
-  memmove(str->dataStr + pos, str->dataStr + pos + len, str->size - pos - len + 1);
+  memmove(str->data_str + pos, str->data_str + pos + len, str->size - pos - len + 1);
   str->size -= len;
 }
 
@@ -466,7 +466,7 @@ void utl_string_replace(utl_string *str1, const char *oldStr, const char *newStr
     utl_error_func("The newStr is NULL in string_replace", utl_user_defined_data);
     return;
   }
-  char *position = strstr(str1->dataStr, oldStr);
+  char *position = strstr(str1->data_str, oldStr);
   if (position == NULL) { 
     utl_error_func("OldStr not found in str1 in string_replace", utl_user_defined_data);
     return;
@@ -474,17 +474,17 @@ void utl_string_replace(utl_string *str1, const char *oldStr, const char *newStr
   size_t oldLen = strlen(oldStr);
   size_t newLen = strlen(newStr);
   size_t tailLen = strlen(position + oldLen);
-  size_t newSize = (position - str1->dataStr) + newLen + tailLen;
-  if (newSize + 1 > str1->capacitySize) {
+  size_t newSize = (position - str1->data_str) + newLen + tailLen;
+  if (newSize + 1 > str1->capacity_size) {
     size_t newCapacity = newSize + 1;
     char *newData = memory_pool_allocate(str1->pool, newCapacity);
     if (!newData) {
         return;
     }
-    memcpy(newData, str1->dataStr, position - str1->dataStr);
-    memcpy(newData + (position - str1->dataStr) + newLen, position + oldLen, tailLen);
-    str1->dataStr = newData;
-    str1->capacitySize = newCapacity;
+    memcpy(newData, str1->data_str, position - str1->data_str);
+    memcpy(newData + (position - str1->data_str) + newLen, position + oldLen, tailLen);
+    str1->data_str = newData;
+    str1->capacity_size = newCapacity;
   } 
   else {
     memmove(position + newLen, position + oldLen, tailLen);
@@ -512,7 +512,7 @@ void utl_string_pop_back(utl_string *str) {
     utl_error_func("Attempt to pop back from an empty string in string_pop_back", utl_user_defined_data);
     return;
   }
-  str->dataStr[str->size - 1] = '\0';
+  str->data_str[str->size - 1] = '\0';
   str->size--;
 }
 
@@ -540,21 +540,21 @@ char utl_string_at(utl_string *str, size_t index) {
     utl_error_func("Index out of range in string_at", utl_user_defined_data);
     return '\0';
   }
-  return str->dataStr[index];
+  return str->data_str[index];
 }
 
 char *utl_string_back(utl_string *str) {
   if (str == NULL || str->size == 0) { 
     return NULL; 
   }
-  return &str->dataStr[str->size - 1];
+  return &str->data_str[str->size - 1];
 }
 
 char *utl_string_front(utl_string *str) {
   if (str == NULL || str->size == 0) { 
     return NULL;  
   }
-  return &str->dataStr[0];
+  return &str->data_str[0];
 }
 
 size_t utl_string_length(utl_string *str) {
@@ -570,7 +570,7 @@ size_t utl_string_capacity(utl_string *str) {
     utl_error_func("The String object is NULL in string_capacity", utl_user_defined_data);
     return 0;
   }
-  return str->capacitySize;
+  return str->capacity_size;
 }
 
 size_t utl_string_max_size(utl_string *str) {
@@ -583,7 +583,7 @@ size_t utl_string_max_size(utl_string *str) {
 
 
 size_t utl_string_copy(utl_string *str, char *buffer, size_t pos, size_t len) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("The String object or its data is NULL in string_copy", utl_user_defined_data);
     return 0;
   }
@@ -599,13 +599,13 @@ size_t utl_string_copy(utl_string *str, char *buffer, size_t pos, size_t len) {
   if (pos + len > str->size || len == 0) { 
     copyLen = str->size - pos;
   }
-  strncpy(buffer, str->dataStr + pos, copyLen);
+  strncpy(buffer, str->data_str + pos, copyLen);
   buffer[copyLen] = '\0';  
   return copyLen;
 }
 
 int utl_string_find(utl_string *str, const char *buffer, size_t pos) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("The String object or its data is NULL in string_find", utl_user_defined_data);
     return -1;
   }
@@ -617,15 +617,15 @@ int utl_string_find(utl_string *str, const char *buffer, size_t pos) {
     utl_error_func("Position out of bounds in string_find", utl_user_defined_data);
     return -1;
   }
-  const char *found = strstr(str->dataStr + pos, buffer);
+  const char *found = strstr(str->data_str + pos, buffer);
   if (found == NULL) { 
     return -1;
   }
-  return (int)(found - str->dataStr);
+  return (int)(found - str->data_str);
 }
 
 int utl_string_rfind(utl_string *str, const char *buffer, size_t pos) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("The String object or its data is NULL in string_rfind", utl_user_defined_data);
     return -1;
   }
@@ -644,7 +644,7 @@ int utl_string_rfind(utl_string *str, const char *buffer, size_t pos) {
   }
   pos = (pos < str->size) ? pos : str->size - 1;
   for (int i = (int)pos; i >= 0; --i) {
-    if (strncmp(str->dataStr + i, buffer, bufferLen) == 0) { 
+    if (strncmp(str->data_str + i, buffer, bufferLen) == 0) { 
       return i;
     }
   }
@@ -652,7 +652,7 @@ int utl_string_rfind(utl_string *str, const char *buffer, size_t pos) {
 }
 
 int utl_string_find_first_of(utl_string *str, const char *buffer, size_t pos) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("The String object or its data is NULL in string_find_first_of", utl_user_defined_data);
     return -1;
   }
@@ -664,15 +664,15 @@ int utl_string_find_first_of(utl_string *str, const char *buffer, size_t pos) {
     utl_error_func("Position out of bounds in string_find_first_of", utl_user_defined_data);
     return -1;
   }
-  const char *found = strstr(str->dataStr + pos, buffer);
+  const char *found = strstr(str->data_str + pos, buffer);
   if (found != NULL) {
-    return (int)(found - str->dataStr);
+    return (int)(found - str->data_str);
   }
   return -1;
 }
 
 int utl_string_find_last_of(utl_string *str, const char *buffer, size_t pos) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("The String object or its data is NULL in string_find_last_of", utl_user_defined_data);
     return -1;
   }
@@ -685,16 +685,16 @@ int utl_string_find_last_of(utl_string *str, const char *buffer, size_t pos) {
     return -1;
   }
   int lastFound = -1;
-  const char *currentFound = strstr(str->dataStr, buffer);
-  while (currentFound != NULL && (size_t)(currentFound - str->dataStr) <= pos) {
-      lastFound = (int)(currentFound - str->dataStr);
+  const char *currentFound = strstr(str->data_str, buffer);
+  while (currentFound != NULL && (size_t)(currentFound - str->data_str) <= pos) {
+      lastFound = (int)(currentFound - str->data_str);
       currentFound = strstr(currentFound + 1, buffer);
   }
   return lastFound;
 }
 
 int utl_string_find_first_not_of(utl_string *str, const char *buffer, size_t pos) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("The String object or its data is NULL in string_find_first_not_of", utl_user_defined_data);
     return -1;
   }
@@ -711,7 +711,7 @@ int utl_string_find_first_not_of(utl_string *str, const char *buffer, size_t pos
     return (int)pos;
   }
   for (size_t i = pos; i <= str->size - bufferLen; ++i) { 
-    if (strncmp(str->dataStr + i, buffer, bufferLen) != 0) { 
+    if (strncmp(str->data_str + i, buffer, bufferLen) != 0) { 
       return (int)i;
     }
   }
@@ -719,7 +719,7 @@ int utl_string_find_first_not_of(utl_string *str, const char *buffer, size_t pos
 }
 
 int utl_string_find_last_not_of(utl_string *str, const char *buffer, size_t pos) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("The String object or its data is NULL in string_find_last_not_of", utl_user_defined_data);
     return -1;
   }
@@ -738,7 +738,7 @@ int utl_string_find_last_not_of(utl_string *str, const char *buffer, size_t pos)
   }
   pos = (pos < str->size - bufferLen) ? pos : str->size - bufferLen;
   for (int i = (int)pos; i >= 0; --i) {
-    if (strncmp(str->dataStr + i, buffer, bufferLen) != 0) { 
+    if (strncmp(str->data_str + i, buffer, bufferLen) != 0) { 
       return i;
     }
   }
@@ -746,11 +746,11 @@ int utl_string_find_last_not_of(utl_string *str, const char *buffer, size_t pos)
 }
 
 const char *utl_string_data(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("Invalid input or uninitialized String in string_data function", utl_user_defined_data);
     return NULL;
   }
-  return str->dataStr;
+  return str->data_str;
 }
 
 const char *utl_string_c_str(const utl_string *str) {
@@ -758,11 +758,11 @@ const char *utl_string_c_str(const utl_string *str) {
     utl_error_func("Invalid input in string_c_str function", utl_user_defined_data);
     return "";
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("Uninitialized String in string_c_str function", utl_user_defined_data);
     return "";
   }
-  return str->dataStr;
+  return str->data_str;
 }
 
 char *utl_string_begin(utl_string *str) {
@@ -770,74 +770,74 @@ char *utl_string_begin(utl_string *str) {
     utl_error_func("Invalid input in string_begin function", utl_user_defined_data);
     return "";
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("Uninitialized String in string_begin function", utl_user_defined_data);
     return "";
   }
-  return str->dataStr;
+  return str->data_str;
 }
 
 char *utl_string_end(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL) { 
+  if (str == NULL || str->data_str == NULL) { 
     utl_error_func("Invalid input or uninitialized String in string_end function", utl_user_defined_data);
     return NULL;
   }
-  return str->dataStr + str->size;
+  return str->data_str + str->size;
 }
 
 char *utl_string_rbegin(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL || str->size == 0) {
+  if (str == NULL || str->data_str == NULL || str->size == 0) {
     utl_error_func("Invalid input, uninitialized, or empty String in string_rbegin function", utl_user_defined_data);
     return NULL; 
   }
-  return str->dataStr + str->size - 1;
+  return str->data_str + str->size - 1;
 }
 
 char *utl_string_rend(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL) { 
+  if (str == NULL || str->data_str == NULL) { 
     utl_error_func("Invalid input or uninitialized String in string_rend function", utl_user_defined_data);
     return NULL;
   }
-  return str->dataStr - 1; 
+  return str->data_str - 1; 
 }
 
 const char *utl_string_cbegin(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL) { 
+  if (str == NULL || str->data_str == NULL) { 
     utl_error_func("Invalid input or uninitialized String in string_cbegin function", utl_user_defined_data);
     return NULL;
   }
-  return str->dataStr;
+  return str->data_str;
 }
 
 const char *utl_string_cend(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL) { 
+  if (str == NULL || str->data_str == NULL) { 
     utl_error_func("Invalid input or uninitialized String in string_cend function", utl_user_defined_data);
     return NULL;
   }
-  return str->dataStr + str->size;
+  return str->data_str + str->size;
 }
 
 const char *utl_string_crbegin(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL || str->size == 0) { 
+  if (str == NULL || str->data_str == NULL || str->size == 0) { 
     utl_error_func("Invalid input, uninitialized, or empty String in string_crbegin function", utl_user_defined_data);
     return NULL;
   }
-  return str->dataStr + str->size - 1;
+  return str->data_str + str->size - 1;
 }
 
 const char *utl_string_crend(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("Invalid input or uninitialized String in string_crend function", utl_user_defined_data);
     return NULL;
   }
-  return str->dataStr - 1;
+  return str->data_str - 1;
 }
 
 void utl_string_clear(utl_string* str) {
   if (str != NULL) {
     str->size = 0;
-    if (str->dataStr != NULL) { 
-      str->dataStr[0] = '\0';
+    if (str->data_str != NULL) { 
+      str->data_str[0] = '\0';
     }
   }
   utl_error_func("String object is null no need to clear in string_clear", utl_user_defined_data);
@@ -851,11 +851,11 @@ char *utl_string_to_upper(utl_string *str) {
       exit(-1);
     }
     for (size_t index = 0; index < str->size; index++) {
-      if (isalpha(str->dataStr[index]) && (str->dataStr[index] >= 'a' && str->dataStr[index] <= 'z')) {
-        upper[index] = toupper(str->dataStr[index]);
+      if (isalpha(str->data_str[index]) && (str->data_str[index] >= 'a' && str->data_str[index] <= 'z')) {
+        upper[index] = toupper(str->data_str[index]);
       }
       else { 
-        upper[index] = str->dataStr[index];
+        upper[index] = str->data_str[index];
       }
     }
     upper[str->size] = '\0';
@@ -873,11 +873,11 @@ char *utl_string_to_lower(utl_string *str) {
       exit(-1);
     }
     for (size_t index = 0; index < str->size; index++) {
-      if (isalpha(str->dataStr[index]) && (str->dataStr[index] >= 'A' && str->dataStr[index] <= 'Z')) {
-        lower[index] = tolower(str->dataStr[index]);
+      if (isalpha(str->data_str[index]) && (str->data_str[index] >= 'A' && str->data_str[index] <= 'Z')) {
+        lower[index] = tolower(str->data_str[index]);
       }
       else { 
-        lower[index] = str->dataStr[index];
+        lower[index] = str->data_str[index];
       }
     }
     lower[str->size] = '\0';
@@ -905,7 +905,7 @@ bool utl_string_set_pool_size(utl_string *str, size_t newSize) {
     utl_error_func("Failed to create a new memory pool in string_set_pool_size", utl_user_defined_data);
     return false;
   }
-  if (str->size > 0 && str->dataStr) {
+  if (str->size > 0 && str->data_str) {
     char* newData = memory_pool_allocate(str->pool, str->size + 1);
     if (!newData) {
       utl_error_func("Failed to allocate memory for string data in the new pool in string_set_pool_size", utl_user_defined_data);
@@ -913,9 +913,9 @@ bool utl_string_set_pool_size(utl_string *str, size_t newSize) {
       str->pool = NULL;
       return false;
     }
-    memcpy(newData, str->dataStr, str->size);
+    memcpy(newData, str->data_str, str->size);
     newData[str->size] = '\0';
-    str->dataStr = newData;
+    str->data_str = newData;
   }
   return true;
 }
@@ -929,7 +929,7 @@ void utl_string_concatenate(utl_string *str1, const utl_string *str2) {
     utl_error_func("Null String object 'str2' in string_concatenate", utl_user_defined_data);
     return;
   }
-  utl_string_append(str1, str2->dataStr);
+  utl_string_append(str1, str2->data_str);
 }
 
 void utl_string_trim_left(utl_string *str) {
@@ -941,13 +941,13 @@ void utl_string_trim_left(utl_string *str) {
     return;
   }
   size_t i = 0;
-  while (i < str->size && isspace((unsigned char)str->dataStr[i])) {
+  while (i < str->size && isspace((unsigned char)str->data_str[i])) {
     i++;
   }
   if (i > 0) {
-    memmove(str->dataStr, str->dataStr + i, str->size - i);
+    memmove(str->data_str, str->data_str + i, str->size - i);
     str->size -= i;
-    str->dataStr[str->size] = '\0';
+    str->data_str[str->size] = '\0';
   }
 }
 
@@ -960,11 +960,11 @@ void utl_string_trim_right(utl_string *str) {
     return;
   }
   size_t i = str->size;
-  while (i > 0 && isspace((unsigned char)str->dataStr[i - 1])) {
+  while (i > 0 && isspace((unsigned char)str->data_str[i - 1])) {
     i--;
   }
   if (i < str->size) {
-    str->dataStr[i] = '\0';
+    str->data_str[i] = '\0';
     str->size = i;
   }
 }
@@ -988,7 +988,7 @@ utl_string **utl_string_split(utl_string *str, const char *delimiter, int *count
     return NULL;
   }
   size_t num_splits = 0;
-  char *temp = utl_string_strdup(str->dataStr);
+  char *temp = utl_string_strdup(str->data_str);
   if (temp == NULL) {
     utl_error_func("Memory allocation failed in string_split", utl_user_defined_data);
     return NULL;
@@ -1007,7 +1007,7 @@ utl_string **utl_string_split(utl_string *str, const char *delimiter, int *count
     utl_error_func("Memory allocation failed for splits in string_split", utl_user_defined_data);
     return NULL;
   }
-  temp = utl_string_strdup(str->dataStr);
+  temp = utl_string_strdup(str->data_str);
   if (temp == NULL) {
     utl_error_func("Memory allocation failed in string_split", utl_user_defined_data);
     free(splits);
@@ -1053,7 +1053,7 @@ utl_string *utl_string_join(utl_string **strings, int count, const char *delimit
     return NULL;
   }
   for (int i = 0; i < count; i++) {
-    utl_string_append(result, strings[i]->dataStr);
+    utl_string_append(result, strings[i]->data_str);
     if (i < count - 1) {
       utl_string_append(result, delimiter);
     }
@@ -1075,7 +1075,7 @@ void utl_string_replace_all(utl_string *str, const char *oldStr, const char *new
     utl_error_func("Memory allocation failed in string_replace_all", utl_user_defined_data);
     return;
   }
-  char *start = str->dataStr;
+  char *start = str->data_str;
   char *end;
   while ((end = strstr(start, oldStr)) != NULL) {
     *end = '\0';
@@ -1084,7 +1084,7 @@ void utl_string_replace_all(utl_string *str, const char *oldStr, const char *new
     start = end + strlen(oldStr);
   }
   utl_string_append(temp, start);
-  utl_string_assign(str, temp->dataStr);
+  utl_string_assign(str, temp->data_str);
   utl_string_deallocate(temp);
 }
 
@@ -1097,7 +1097,7 @@ int utl_string_to_int(utl_string *str) {
     utl_error_func("Empty string in string_to_int", utl_user_defined_data);
     return 0;
   }
-  return atoi(str->dataStr);
+  return atoi(str->data_str);
 }
 
 float utl_string_to_float(utl_string *str) {
@@ -1109,7 +1109,7 @@ float utl_string_to_float(utl_string *str) {
     utl_error_func("Empty string in string_to_float", utl_user_defined_data);
     return 0.0f;
   }
-  return atof(str->dataStr);
+  return atof(str->data_str);
 }
 
 double utl_string_to_double(utl_string *str) {
@@ -1121,7 +1121,7 @@ double utl_string_to_double(utl_string *str) {
     utl_error_func("Empty string in string_to_double", utl_user_defined_data);
     return 0.0;
   }
-  return strtod(str->dataStr, NULL);
+  return strtod(str->data_str, NULL);
 }
 
 void utl_string_pad_left(utl_string *str, size_t totalLength, char padChar) {
@@ -1141,12 +1141,12 @@ void utl_string_pad_left(utl_string *str, size_t totalLength, char padChar) {
     return;
   }
   memset(newData, padChar, padSize);
-  memcpy(newData + padSize, str->dataStr, str->size);
+  memcpy(newData + padSize, str->data_str, str->size);
   newData[newSize] = '\0';
-  free(str->dataStr);
-  str->dataStr = newData;
+  free(str->data_str);
+  str->data_str = newData;
   str->size = newSize;
-  str->capacitySize = newSize + 1;
+  str->capacity_size = newSize + 1;
 }
 
 void utl_string_pad_right(utl_string *str, size_t totalLength, char padChar) {
@@ -1160,16 +1160,16 @@ void utl_string_pad_right(utl_string *str, size_t totalLength, char padChar) {
   }
   size_t padSize = totalLength - str->size;
   size_t newSize = str->size + padSize;
-  char *newData = (char *)realloc(str->dataStr, newSize + 1);
+  char *newData = (char *)realloc(str->data_str, newSize + 1);
   if (newData == NULL) {
     utl_error_func("Failed to allocate memory in string_pad_right", utl_user_defined_data);
     return;
   }
   memset(newData + str->size, padChar, padSize);
   newData[newSize] = '\0';
-  str->dataStr = newData;
+  str->data_str = newData;
   str->size = newSize;
-  str->capacitySize = newSize + 1;
+  str->capacity_size = newSize + 1;
 }
 
 utl_string *utl_string_to_hex(utl_string *str) {
@@ -1187,7 +1187,7 @@ utl_string *utl_string_to_hex(utl_string *str) {
   }
   for (size_t i = 0; i < str->size; ++i) {
     char buffer[3];
-    sprintf(buffer, "%02x", (unsigned char)str->dataStr[i]);
+    sprintf(buffer, "%02x", (unsigned char)str->data_str[i]);
     utl_string_append(hexStr, buffer);
   }
   return hexStr;
@@ -1208,7 +1208,7 @@ utl_string *utl_string_from_hex(utl_string *hexStr) {
     return NULL;
   }
   for (size_t i = 0; i < hexStr->size; i += 2) {
-    char buffer[3] = {hexStr->dataStr[i], hexStr->dataStr[i + 1], '\0'};
+    char buffer[3] = {hexStr->data_str[i], hexStr->data_str[i + 1], '\0'};
     char ch = (char)strtol(buffer, NULL, 16);
     utl_string_push_back(str, ch);
   }
@@ -1224,12 +1224,12 @@ size_t utl_string_count(utl_string *str, const char *substr) {
     utl_error_func("Null substring in string_count", utl_user_defined_data);
     return 0;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("Null data string in String object in string_count", utl_user_defined_data);
     return 0;
   }
   size_t count = 0;
-  const char *temp = str->dataStr;
+  const char *temp = str->data_str;
   const char *found;
   while ((found = strstr(temp, substr)) != NULL) {
     count++;
@@ -1247,7 +1247,7 @@ void utl_string_remove(utl_string *str, const char *substr) {
     utl_error_func("Null substring in string_remove", utl_user_defined_data);
     return;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("Null data string in String object in string_remove", utl_user_defined_data);
     return;
   }
@@ -1256,14 +1256,14 @@ void utl_string_remove(utl_string *str, const char *substr) {
     return;
   }
   size_t len = strlen(substr);
-  char *p = str->dataStr;
+  char *p = str->data_str;
   while ((p = strstr(p, substr)) != NULL) { 
     memmove(p, p + len, strlen(p + len) + 1);
   }
 }
 
 void utl_string_remove_range(utl_string *str, size_t startPos, size_t endPos) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("Null String object in string_remove_range", utl_user_defined_data);
     return;
   }
@@ -1272,7 +1272,7 @@ void utl_string_remove_range(utl_string *str, size_t startPos, size_t endPos) {
     return;
   }
   size_t length = endPos - startPos;
-  memmove(str->dataStr + startPos, str->dataStr + endPos, str->size - endPos + 1);
+  memmove(str->data_str + startPos, str->data_str + endPos, str->size - endPos + 1);
   str->size -= length;
 }
 
@@ -1310,7 +1310,7 @@ utl_string **utl_string_tokenize(utl_string *str, const char *delimiters, int *c
     return NULL;
   }
   size_t num_tokens = 0;
-  char *temp_str = utl_string_strdup(str->dataStr);
+  char *temp_str = utl_string_strdup(str->data_str);
   if (temp_str == NULL) {
     utl_error_func("Memory allocation failed in string_tokenize", utl_user_defined_data);
     return NULL;
@@ -1326,7 +1326,7 @@ utl_string **utl_string_tokenize(utl_string *str, const char *delimiters, int *c
     utl_error_func("Memory allocation failed for tokens in string_tokenize", utl_user_defined_data);
     return NULL;
   }
-  temp_str = utl_string_strdup(str->dataStr);
+  temp_str = utl_string_strdup(str->data_str);
   if (temp_str == NULL) {
     utl_error_func("Memory allocation failed in string_tokenize", utl_user_defined_data);
     free(tokens);
@@ -1360,13 +1360,13 @@ int utl_string_compare_ignore_case(utl_string *str1, utl_string *str2) {
     }
     return (str1 == NULL) ? -1 : 1;
   }
-  if (str1->dataStr == NULL || str2->dataStr == NULL) {
-    if (str1->dataStr == str2->dataStr) {
+  if (str1->data_str == NULL || str2->data_str == NULL) {
+    if (str1->data_str == str2->data_str) {
       return 0;
     }
-    return (str1->dataStr == NULL) ? -1 : 1;
+    return (str1->data_str == NULL) ? -1 : 1;
   }
-  return strcasecmp(str1->dataStr, str2->dataStr);
+  return strcasecmp(str1->data_str, str2->data_str);
 }
 
 utl_string *utl_string_base64_encode(const utl_string *input) {
@@ -1374,7 +1374,7 @@ utl_string *utl_string_base64_encode(const utl_string *input) {
     utl_error_func("The String object is NULL in string_baes64_encode", utl_user_defined_data);
     return NULL;
   }
-  if (input->dataStr == NULL) {
+  if (input->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_base64_encode", utl_user_defined_data);
     return NULL;
   }
@@ -1382,7 +1382,7 @@ utl_string *utl_string_base64_encode(const utl_string *input) {
   int val = 0, valb = -6;
   size_t i;
   for (i = 0; i < input->size; i++) {
-    unsigned char c = input->dataStr[i];
+    unsigned char c = input->data_str[i];
     val = (val << 8) + c;
     valb += 8;
     while (valb >= 0) {
@@ -1404,7 +1404,7 @@ utl_string *utl_string_base64_decode(const utl_string *encodedStr) {
     utl_error_func("EncodedStr param is null in string_base64_decode", utl_user_defined_data);
     return NULL;
   }
-  if (encodedStr->dataStr == NULL) {
+  if (encodedStr->data_str == NULL) {
     utl_error_func("DataStr item of encodedStr object is null in string_base64_decode", utl_user_defined_data);
     return NULL;
   }
@@ -1417,7 +1417,7 @@ utl_string *utl_string_base64_decode(const utl_string *encodedStr) {
   size_t i = 0;
   size_t j = 0;
   for (i = 0; i < encodedStr->size; i++) {
-    char c = encodedStr->dataStr[i];
+    char c = encodedStr->data_str[i];
     if (c == '=') {
       break;
     }
@@ -1486,7 +1486,7 @@ utl_string *utl_string_repeat(const utl_string *str, size_t count) {
     utl_error_func("The String object is NULL in string_repeat", utl_user_defined_data);
     return NULL;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_repeat", utl_user_defined_data);
     return NULL;
   }
@@ -1498,7 +1498,7 @@ utl_string *utl_string_repeat(const utl_string *str, size_t count) {
   }
   char *current = repeatedStr;
   for (size_t i = 0; i < count; ++i) {
-    memcpy(current, str->dataStr, str->size);
+    memcpy(current, str->data_str, str->size);
     current += str->size;
   }
   *current = '\0';
@@ -1525,7 +1525,7 @@ utl_string *utl_string_join_variadic(size_t count, ...) {
   va_start(args, count);
   for (size_t i = 0; i < count; ++i) {
     utl_string *str = va_arg(args, utl_string*);
-    memcpy(current, str->dataStr, str->size);
+    memcpy(current, str->data_str, str->size);
     current += str->size;
   }
   *current = '\0';
@@ -1540,7 +1540,7 @@ void utl_string_trim_characters(utl_string *str, const char *chars) {
     utl_error_func("The String object is NULL in string_trim_characters", utl_user_defined_data);
     return;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_trim_characters", utl_user_defined_data);
     return;
   }
@@ -1548,8 +1548,8 @@ void utl_string_trim_characters(utl_string *str, const char *chars) {
     utl_error_func("The chars parameter is NULL in string_trim_characters", utl_user_defined_data);
     return;
   }
-  char *start = str->dataStr;
-  char *end = str->dataStr + str->size - 1;
+  char *start = str->data_str;
+  char *end = str->data_str + str->size - 1;
   while (start <= end && strchr(chars, *start)) { 
     start++;
   }
@@ -1557,8 +1557,8 @@ void utl_string_trim_characters(utl_string *str, const char *chars) {
     end--;
   }
   size_t newLength = end - start + 1;
-  memmove(str->dataStr, start, newLength);
-  str->dataStr[newLength] = '\0';
+  memmove(str->data_str, start, newLength);
+  str->data_str[newLength] = '\0';
   str->size = newLength;
 }
 
@@ -1567,17 +1567,17 @@ void utl_string_shuffle(utl_string *str){
     utl_error_func("The String object is NULL in string_shuffle", utl_user_defined_data);
     return;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_shuffle", utl_user_defined_data);
     return;
   }
   srand(time(NULL)); 
-  size_t length = strlen(str->dataStr);
+  size_t length = strlen(str->data_str);
   for (size_t i = length - 1; i > 0; i--) {
     size_t j = rand() % (i + 1);
-    char temp = str->dataStr[i];
-    str->dataStr[i] = str->dataStr[j];
-    str->dataStr[j] = temp;
+    char temp = str->data_str[i];
+    str->data_str[i] = str->data_str[j];
+    str->data_str[j] = temp;
   }
 }
 
@@ -1586,21 +1586,21 @@ void utl_string_to_title(utl_string *str) {
     utl_error_func("The String object is NULL in string_to_title", utl_user_defined_data);
     return;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_to_title", utl_user_defined_data);
     return;
   }
   bool capitalize = true;
   for (size_t i = 0; i < str->size; i++) {
-    if (capitalize && isalpha(str->dataStr[i])) {
-      str->dataStr[i] = toupper(str->dataStr[i]);
+    if (capitalize && isalpha(str->data_str[i])) {
+      str->data_str[i] = toupper(str->data_str[i]);
       capitalize = false;
     } 
-    else if (!isalpha(str->dataStr[i])) {
+    else if (!isalpha(str->data_str[i])) {
       capitalize = true;
     } 
     else {
-      str->dataStr[i] = tolower(str->dataStr[i]);
+      str->data_str[i] = tolower(str->data_str[i]);
     }
   }
 }
@@ -1610,7 +1610,7 @@ void utl_string_to_capitalize(utl_string *str) {
     utl_error_func("The String object is NULL in string_to_capitalize", utl_user_defined_data);
     return;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_to_capitalize", utl_user_defined_data);
     return;
   }
@@ -1618,16 +1618,16 @@ void utl_string_to_capitalize(utl_string *str) {
     utl_error_func("The size of String object is zero in string_to_capitalize", utl_user_defined_data);
     return;
   }
-  str->dataStr[0] = toupper(str->dataStr[0]);
+  str->data_str[0] = toupper(str->data_str[0]);
 }
 
 void utl_string_to_casefold(utl_string *str) {
-  if (str == NULL || str->dataStr == NULL) {
+  if (str == NULL || str->data_str == NULL) {
     utl_error_func("Invalid string input in string_to_casefold", utl_user_defined_data);
     return;
   }
   for (size_t i = 0; i < str->size; i++) {
-    str->dataStr[i] = tolower(str->dataStr[i]);
+    str->data_str[i] = tolower(str->data_str[i]);
   }
 }
 
@@ -1636,7 +1636,7 @@ bool utl_string_starts_with(const utl_string *str, const char *substr) {
     utl_error_func("The String object is NULL in string_starts_with", utl_user_defined_data);
     return false;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_starts_with", utl_user_defined_data);
     return false;
   }
@@ -1648,7 +1648,7 @@ bool utl_string_starts_with(const utl_string *str, const char *substr) {
   if (substrLen > str->size) {
     return false;
   }
-  return strncmp(str->dataStr, substr, substrLen) == 0;
+  return strncmp(str->data_str, substr, substrLen) == 0;
 }
 
 bool utl_string_ends_with(const utl_string *str, const char *substr) {
@@ -1656,7 +1656,7 @@ bool utl_string_ends_with(const utl_string *str, const char *substr) {
     utl_error_func("The String object is NULL in string_ends_with", utl_user_defined_data);
     return false;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("The dataStr of String object is NULL in string_ends_with", utl_user_defined_data);
     return false;
   }
@@ -1669,7 +1669,7 @@ bool utl_string_ends_with(const utl_string *str, const char *substr) {
   if (substrLen > strLen) {
     return false;
   }
-  return strncmp(str->dataStr + strLen - substrLen, substr, substrLen) == 0;
+  return strncmp(str->data_str + strLen - substrLen, substr, substrLen) == 0;
 }
 
 void utl_string_swap_case(utl_string *str) {
@@ -1677,16 +1677,16 @@ void utl_string_swap_case(utl_string *str) {
     utl_error_func("Str is NULL in string_swap_case", utl_user_defined_data);
     return;
   }
-  if (str->dataStr == NULL) {
+  if (str->data_str == NULL) {
     utl_error_func("Str->dataStr is NULL in string_swap_case", utl_user_defined_data);
     return;
   }
   for (size_t i = 0; i < str->size; i++) {
-    if (islower(str->dataStr[i])) {
-      str->dataStr[i] = toupper(str->dataStr[i]);
+    if (islower(str->data_str[i])) {
+      str->data_str[i] = toupper(str->data_str[i]);
     }
-    else if (isupper(str->dataStr[i])) { 
-      str->dataStr[i] = tolower(str->dataStr[i]);
+    else if (isupper(str->data_str[i])) { 
+      str->data_str[i] = tolower(str->data_str[i]);
     }
   }
 }

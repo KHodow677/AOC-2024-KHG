@@ -31,7 +31,6 @@ def main():
   command = sys.argv[1]
   arg2 = sys.argv[2] if len(sys.argv) > 2 else ""
   arg3 = sys.argv[3] if len(sys.argv) > 3 else ""
-  arg4 = sys.argv[4] if len(sys.argv) > 4 else ""
   if command == "build" and not arg2:
     clean_and_copy_resources()
     run_cmake()
@@ -39,6 +38,9 @@ def main():
   elif command == "run" and not arg2:
     os.chdir("build")
     run_executable()
+  elif command == "run":
+    os.chdir("build")
+    run_executable(arg2)
   elif command == "build" and arg2 == "run" and not arg3:
     clean_and_copy_resources()
     run_cmake()

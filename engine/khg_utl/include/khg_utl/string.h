@@ -3,25 +3,25 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-extern const char *STRING_ASCII_LETTERS;
-extern const char *STRING_ASCII_LOWERCASE;
-extern const char *STRING_ASCII_UPPERCASE;
-extern const char *STRING_DIGITS;
-extern const char *STRING_HEXDIGITS;
-extern const char *STRING_WHITESPACE;
-extern const char *STRING_PUNCTUATION;
+extern const char *UTL_STRING_ASCII_LETTERS;
+extern const char *UTL_STRING_ASCII_LOWERCASE;
+extern const char *UTL_STRING_ASCII_UPPERCASE;
+extern const char *UTL_STRING_DIGITS;
+extern const char *UTL_STRING_HEXDIGITS;
+extern const char *UTL_STRING_WHITESPACE;
+extern const char *UTL_STRING_PUNCTUATION;
 
 typedef struct string utl_string;
 typedef struct memory_pool_string {
   void *pool;
-  size_t poolSize;
+  size_t pool_size;
   size_t used;
 } utl_memory_pool_string;
 
 struct string {
-  char *dataStr;
+  char *data_str;
   size_t size;
-  size_t capacitySize;
+  size_t capacity_size;
   utl_memory_pool_string *pool;
 };
 
