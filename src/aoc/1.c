@@ -1,6 +1,5 @@
 #include "aoc/1.h"
 #include "khg_utl/algorithm.h"
-#include "khg_utl/array.h"
 #include "khg_utl/file_reader.h"
 #include "khg_utl/map.h"
 #include <stdlib.h>
