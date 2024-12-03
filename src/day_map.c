@@ -24,8 +24,8 @@ utl_map *create_day_map() {
   insert_func_input(day_map, "day0102", day0102, "res/assets/inputs/1.txt", 1000);
   insert_func_input(day_map, "day0201", day0201, "res/assets/inputs/2.txt", 1000);
   insert_func_input(day_map, "day0202", day0202, "res/assets/inputs/2.txt", 1000);
-  insert_func_input(day_map, "day0301", day0301, "res/assets/inputs/3_test.txt", 1);
-  insert_func_input(day_map, "day0302", day0302, "res/assets/inputs/3_test.txt", 1);
+  insert_func_input(day_map, "day0301", day0301, "res/assets/inputs/3.txt", 1);
+  insert_func_input(day_map, "day0302", day0302, "res/assets/inputs/3.txt", 1);
   return day_map;
 }
 

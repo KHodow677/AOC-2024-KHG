@@ -22,11 +22,9 @@ void day0101(const char *input_path, const uint16_t num_lines) {
   printf("Using file: %s\n", input_path);
   const char *delimiter = "   ";
   utl_file_reader *reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
-  int *arrs[2];
   int arr1[num_lines];
   int arr2[num_lines];
-  arrs[0] = arr1;
-  arrs[1] = arr2;
+  int *arrs[2] = { arr1, arr2 };
   int count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
@@ -55,11 +53,9 @@ void day0102(const char *input_path, const uint16_t num_lines) {
   printf("Using file: %s\n", input_path);
   const char *delimiter = "   ";
   utl_file_reader* reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
-  int *arrs[2];
   int arr1[num_lines];
   int arr2[num_lines];
-  arrs[0] = arr1;
-  arrs[1] = arr2;
+  int *arrs[2] = { arr1, arr2 };
   int count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
