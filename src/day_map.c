@@ -20,6 +20,7 @@ utl_map *create_day_map() {
   utl_map *day_map = utl_map_create(compare_strings, free, free);
   insert_func_input(day_map, "day0101", day0101, "res/assets/inputs/1.txt", 1000);
   insert_func_input(day_map, "day0102", day0102, "res/assets/inputs/1.txt", 1000);
+  insert_func_input(day_map, "day0102", day0102, "res/assets/inputs/3_test.txt", 1);
+  insert_func_input(day_map, "day0102", day0102, "res/assets/inputs/3_test.txt", 1);
   return day_map;
 }
-
