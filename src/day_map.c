@@ -1,5 +1,6 @@
 #include "day_map.h"
 #include "aoc/1.h"
+#include "aoc/2.h"
 #include "khg_utl/map.h"
 #include "khg_utl/string.h"
 #include <stdint.h>
@@ -20,6 +21,8 @@ utl_map *create_day_map() {
   utl_map *day_map = utl_map_create(compare_strings, free, free);
   insert_func_input(day_map, "day0101", day0101, "res/assets/inputs/1.txt", 1000);
   insert_func_input(day_map, "day0102", day0102, "res/assets/inputs/1.txt", 1000);
+  insert_func_input(day_map, "day0201", day0201, "res/assets/inputs/2.txt", 1000);
+  insert_func_input(day_map, "day0202", day0202, "res/assets/inputs/2.txt", 1000);
   return day_map;
 }
 

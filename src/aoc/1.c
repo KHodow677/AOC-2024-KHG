@@ -20,6 +20,7 @@ static int compare_ints_map(const utl_key_type a, const utl_key_type b) {
 void day0101(const char *input_path, const uint16_t num_lines) {
   printf("Advent of Code 2024: Day 1 Part 1\n");
   printf("Using file: %s\n", input_path);
+  const char *delimiter = "   ";
   utl_file_reader *reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
   utl_array *arrs[2];
   arrs[0] = utl_array_create(sizeof(int), num_lines);
@@ -27,9 +28,7 @@ void day0101(const char *input_path, const uint16_t num_lines) {
   int count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
-    const char *delimiter = "   ";
-    char *token;
-    token = strtok(buffer, delimiter);
+    char *token = strtok(buffer, delimiter);
     int num_count = 0;
     while (token != NULL) {
       int num = atoi(token);
@@ -54,6 +53,7 @@ void day0101(const char *input_path, const uint16_t num_lines) {
 void day0102(const char *input_path, const uint16_t num_lines) {
   printf("Advent of Code 2024: Day 1 Part 2\n");
   printf("Using file: %s\n", input_path);
+  const char *delimiter = "   ";
   utl_file_reader* reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
   utl_array *arrs[2];
   arrs[0] = utl_array_create(sizeof(int), num_lines);
@@ -61,9 +61,7 @@ void day0102(const char *input_path, const uint16_t num_lines) {
   int count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
-    const char *delimiter = "   ";
-    char *token;
-    token = strtok(buffer, delimiter);
+    char *token = strtok(buffer, delimiter);
     int num_count = 0;
     while (token != NULL) {
       int num = atoi(token);
