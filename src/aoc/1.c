@@ -46,7 +46,6 @@ void day0101(const char *input_path, const uint16_t num_lines) {
   utl_algorithm_sort(arr2, num_lines, sizeof(int), compare_ints);
   int total_distance = 0;
   for (int i = 0; i < num_lines; i++) {
-    printf("%i, %i\n", arrs[0][i], arrs[1][i]);
     total_distance += abs(arrs[0][i] - arrs[1][i]);
   }
   printf("Answer: %i\n", total_distance);
@@ -105,4 +104,3 @@ void day0102(const char *input_path, const uint16_t num_lines) {
   utl_map_deallocate(freq_table);
   utl_file_reader_close(reader);
 };
-
