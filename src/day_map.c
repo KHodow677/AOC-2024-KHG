@@ -2,6 +2,7 @@
 #include "aoc/1.h"
 #include "aoc/2.h"
 #include "aoc/3.h"
+#include "aoc/4.h"
 #include "khg_utl/map.h"
 #include "khg_utl/string.h"
 #include <stdint.h>
@@ -26,6 +27,8 @@ utl_map *create_day_map() {
   insert_func_input(day_map, "day0202", day0202, "res/assets/inputs/2.txt", 1000);
   insert_func_input(day_map, "day0301", day0301, "res/assets/inputs/3.txt", 1);
   insert_func_input(day_map, "day0302", day0302, "res/assets/inputs/3.txt", 1);
+  insert_func_input(day_map, "day0401", day0401, "res/assets/inputs/4.txt", 140);
+  insert_func_input(day_map, "day0402", day0402, "res/assets/inputs/4.txt", 140);
   return day_map;
 }
 

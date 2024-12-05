@@ -42,7 +42,7 @@ utl_string **utl_string_tokenize(utl_string *str, const char *delimiters, int *c
 utl_string *utl_string_from_unicode(const wchar_t *wstr);
 utl_string **utl_string_create_from_initializer(size_t count, ...);
 utl_string *utl_string_to_hex(utl_string *str);
-utl_string *utl_string_from_hex(utl_string *hexStr);
+utl_string *utl_string_from_hex(utl_string *hex_str);
 utl_string *utl_string_base64_encode(const utl_string *input);
 utl_string *utl_string_base64_decode(const utl_string *input);
 utl_string *utl_string_repeat(const utl_string *str, size_t count);
