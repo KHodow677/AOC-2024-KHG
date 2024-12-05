@@ -88,7 +88,7 @@ static int consider_x_mas(const int max, const char lines[max][max+1], possible_
 }
 
 void day0401(const char *input_path, const uint16_t num_lines) {
-  printf("Advent of Code 2024: Day 3 Part 1\n");
+  printf("Advent of Code 2024: Day 4 Part 1\n");
   printf("Using file: %s\n", input_path);
   utl_file_reader *reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
   utl_vector *possible = utl_vector_create(sizeof(possible_xmas));
@@ -120,7 +120,7 @@ void day0401(const char *input_path, const uint16_t num_lines) {
 };
 
 void day0402(const char *input_path, const uint16_t num_lines) {
-  printf("Advent of Code 2024: Day 3 Part 2\n");
+  printf("Advent of Code 2024: Day 4 Part 2\n");
   printf("Using file: %s\n", input_path);
   utl_file_reader* reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
   utl_vector *possible = utl_vector_create(sizeof(possible_xmas));

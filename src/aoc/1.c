@@ -8,19 +8,16 @@
 #include <string.h>
 
 static int compare_ints(const void *a, const void *b) {
-  return (*(int*)a - *(int*)b);
+  return (*(int *)a - *(int *)b);
 }
 
 static int compare_ints_map(const utl_key_type a, const utl_key_type b) {
-  const int* ia = (const int*)a;
-  const int* ib = (const int*)b;
-  return (*ia - *ib);
+  return (*(const int *)a - *(const int *)b);
 }
 
 void day0101(const char *input_path, const uint16_t num_lines) {
   printf("Advent of Code 2024: Day 1 Part 1\n");
   printf("Using file: %s\n", input_path);
-  const char *delimiter = "   ";
   utl_file_reader *reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
   int arr1[num_lines];
   int arr2[num_lines];
@@ -28,12 +25,12 @@ void day0101(const char *input_path, const uint16_t num_lines) {
   int count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
-    char *token = strtok(buffer, delimiter);
+    char *token = strtok(buffer, "   ");
     int num_count = 0;
     while (token) {
       int num = atoi(token);
       arrs[num_count][count] = num;
-      token = strtok(NULL, delimiter);
+      token = strtok(NULL, "   ");
       num_count++;
     }
     count++;
@@ -51,7 +48,6 @@ void day0101(const char *input_path, const uint16_t num_lines) {
 void day0102(const char *input_path, const uint16_t num_lines) {
   printf("Advent of Code 2024: Day 1 Part 2\n");
   printf("Using file: %s\n", input_path);
-  const char *delimiter = "   ";
   utl_file_reader* reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
   int arr1[num_lines];
   int arr2[num_lines];
@@ -59,12 +55,12 @@ void day0102(const char *input_path, const uint16_t num_lines) {
   int count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
-    char *token = strtok(buffer, delimiter);
+    char *token = strtok(buffer, "   ");
     int num_count = 0;
     while (token) {
       int num = atoi(token);
       arrs[num_count][count] = num;
-      token = strtok(NULL, delimiter);
+      token = strtok(NULL, "   ");
       num_count++;
     }
     count++;
@@ -97,3 +93,4 @@ void day0102(const char *input_path, const uint16_t num_lines) {
   utl_map_deallocate(freq_table);
   utl_file_reader_close(reader);
 };
+

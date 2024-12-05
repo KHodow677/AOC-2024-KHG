@@ -19,11 +19,9 @@ static bool is_safe(int *levels, int size) {
 }
 
 void day0201(const char *input_path, const uint16_t num_lines) {
-  printf("Advent of Code 2024: Day 1 Part 1\n");
+  printf("Advent of Code 2024: Day 2 Part 1\n");
   printf("Using file: %s\n", input_path);
-  const char *delimiter = " ";
   utl_file_reader *reader = utl_file_reader_open(input_path, UTL_READ_TEXT);
-  int current_num, previous_num;
   int count = 0;
   char buffer[256];
   while (utl_file_reader_read_line(buffer, sizeof(buffer), reader)) {
